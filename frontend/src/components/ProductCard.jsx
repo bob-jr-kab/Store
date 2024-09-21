@@ -7,8 +7,9 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
 import React from "react";
 import { BorderColor, DeleteForever } from "@mui/icons-material";
+import { Divider } from "@mui/material";
 
-const ProductCard = () => {
+const ProductCard = ({ product }) => {
   return (
     <div>
       <Card sx={{ maxWidth: 300, marginTop: "20px " }}>
@@ -16,13 +17,17 @@ const ProductCard = () => {
           <CardMedia
             component="img"
             height="200 "
-            image="https://www.apple.com/newsroom/images/2024/09/apple-debuts-iphone-16-pro-and-iphone-16-pro-max/article/Apple-iPhone-16-Pro-finish-lineup-240909_big.jpg.large.jpg"
-            alt="green iguana"
+            image={product.image}
+            alt={product.name}
           />
         </CardActionArea>
+        <Divider />
         <CardContent>
           <Typography variant="h5" component="div">
-            Iphone 16 Pro max
+            {product.name}
+          </Typography>{" "}
+          <Typography variant="h5" component="div">
+            ${product.price}
           </Typography>
         </CardContent>
         <CardActions>

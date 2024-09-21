@@ -2,13 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 import productRoute from "../backend/route/product.route.js";
-
 import cors from "cors";
-
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
 
 app.use("/api/products", productRoute);
