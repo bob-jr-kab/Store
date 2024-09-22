@@ -19,7 +19,9 @@ const ProductCard = ({ product, onDelete }) => {
   };
   return (
     <div>
-      <Card sx={{ maxWidth: 300, marginTop: "20px " }}>
+      <Card
+        sx={{ maxWidth: 300, marginTop: "20px ", backgroundColor: "#FAF7F0" }}
+      >
         <CardActionArea>
           <CardMedia
             component="img"
@@ -29,7 +31,7 @@ const ProductCard = ({ product, onDelete }) => {
           />
         </CardActionArea>
         <Divider />
-        <CardContent>
+        <CardContent sx={{}}>
           <Typography variant="h6" component="div">
             {product.name}
           </Typography>
@@ -38,7 +40,7 @@ const ProductCard = ({ product, onDelete }) => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button onClick={handleOpen} size="small" color="primary">
+          <Button onClick={handleOpen} size="small" color="#ECDFCC">
             <BorderColor />
           </Button>
 
