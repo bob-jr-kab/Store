@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 
@@ -24,7 +24,26 @@ const Homepage = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+  // Handle delete product
+  const handleDeleteProduct = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        method: "DELETE",
+      });
 
+      if (!response.ok) {
+        console.error("Failed to delete product");
+        return;
+      }
+
+      // Use the filter method to remove the deleted product from the state
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
   return (
     <Box
       maxWidth="1140px"
@@ -35,10 +54,20 @@ const Homepage = () => {
       justifyContent="space-evenly"
       flexWrap="wrap"
     >
-      {/* Map through products and render a ProductCard for each */}
-      {products.map((product) => (
-        <ProductCard key={product._id} product={product} /> // Assuming product._id exists
-      ))}
+      {/* Conditionally render content */}
+      {products.length === 0 ? (
+        <Typography variant="h6" sx={{ marginTop: 2 }}>
+          No products available.
+        </Typography>
+      ) : (
+        products.map((product) => (
+          <ProductCard
+            key={product._id}
+            product={product}
+            onDelete={() => handleDeleteProduct(product._id)} // Pass delete handler to ProductCard
+          />
+        ))
+      )}
     </Box>
   );
 };

@@ -5,11 +5,18 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
-import React from "react";
+import { React, useState } from "react";
 import { BorderColor, DeleteForever } from "@mui/icons-material";
-import { Divider } from "@mui/material";
+import { Backdrop, CircularProgress, Divider } from "@mui/material";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onDelete }) => {
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
   return (
     <div>
       <Card sx={{ maxWidth: 300, marginTop: "20px " }}>
@@ -23,21 +30,29 @@ const ProductCard = ({ product }) => {
         </CardActionArea>
         <Divider />
         <CardContent>
-          <Typography variant="h5" component="div">
+          <Typography variant="h6" component="div">
             {product.name}
-          </Typography>{" "}
+          </Typography>
           <Typography variant="h5" component="div">
             ${product.price}
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" color="primary">
+          <Button onClick={handleOpen} size="small" color="primary">
             <BorderColor />
           </Button>
 
           <Button size="small" color="error">
-            <DeleteForever />
+            <DeleteForever onClick={onDelete} />
           </Button>
+
+          <Backdrop
+            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+            open={open}
+            onClick={handleClose}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
         </CardActions>
       </Card>
     </div>

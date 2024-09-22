@@ -1,4 +1,12 @@
-import { Box, Button, styled, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  styled,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import React, { useState } from "react";
 import ProductCard from "../components/ProductCard";
 
@@ -8,7 +16,6 @@ const StyledForm = styled(Box)(() => ({
   borderRadius: "5px",
   alignItems: "center",
   margin: " 20%  auto 0 auto",
-
   "& label": {
     fontSize: "14px",
     marginBottom: "5px",
@@ -22,6 +29,7 @@ const StyledForm = styled(Box)(() => ({
 const StyledButton = styled(Button)(() => ({
   fontSize: "16px",
   padding: "10px 20px",
+  margin: "5px",
   marginTop: "10px",
   textTransform: "capitalize",
   backgroundColor: "blue",
@@ -32,13 +40,18 @@ const StyledButton = styled(Button)(() => ({
   },
 }));
 
-const createpage = () => {
-  const [newProduct, setnewProduct] = useState({
+const CreatePage = () => {
+  const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
     image: "",
   });
   const [product, setProduct] = useState(null);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar state
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // 'success' or 'error'
+
   const createProduct = async (product) => {
     try {
       const response = await fetch("http://localhost:5000/api/products", {
@@ -53,32 +66,52 @@ const createpage = () => {
         return { success: false, message: "Failed to add product" };
       }
 
-      // Parse the response from the server
       const result = await response.json();
 
-      // Return the result to the caller (success message or created product data)
       return {
         success: result.success,
         data: result.data,
-        message: result.message,
       };
     } catch (error) {
-      // Handle errors (network issues, bad requests, etc.)
       console.error("Error creating product:", error);
-      return { success: false, message: "Failed to create product" };
+      return { success: false, message: "can not add product" };
     }
   };
+
   const handleAddProduct = async () => {
+    // Validate if all fields are filled
+    if (
+      !newProduct.name.trim() ||
+      !newProduct.price.trim() ||
+      !newProduct.image.trim()
+    ) {
+      setSnackbarMessage("Please provide all fields");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true); // Open Snackbar for error
+      return;
+    }
+
     const { success, message } = await createProduct(newProduct);
 
-    setProduct(newProduct);
-
     if (success) {
-      console.log("Product created successfully:", message);
+      setProduct(newProduct);
+      setSnackbarMessage("Product added successfully");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true); // Open Snackbar for success
     } else {
-      console.log("Failed to create product:", message);
+      setSnackbarMessage(message || "Failed to add product");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true); // Open Snackbar for failure
     }
+
+    setNewProduct({ name: "", price: "", image: "" });
   };
+
+  // Function to close the Snackbar
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <div>
       <Box
@@ -93,51 +126,67 @@ const createpage = () => {
         }}
       >
         <StyledForm sx={{ width: 800, maxWidth: "100%" }}>
-          <Typography variant="h4">Crete Product</Typography> <br />
+          <Typography variant="h4">Create Product</Typography>
+          <br />
           <TextField
             onChange={(e) =>
-              setnewProduct({ ...newProduct, name: e.target.value })
+              setNewProduct({ ...newProduct, name: e.target.value })
             }
             required
             id="name"
             fullWidth
-            label="product name"
+            label="Product Name"
           />
-          <h1></h1>
+          <br /> <br />
           <TextField
             onChange={(e) =>
-              setnewProduct({ ...newProduct, price: e.target.value })
+              setNewProduct({ ...newProduct, price: e.target.value })
             }
             required
             id="price"
             fullWidth
-            label=" Enter Price"
+            label="Enter Price"
           />
-          <h1></h1>
+          <br />
+          <br />
           <TextField
             onChange={(e) =>
-              setnewProduct({ ...newProduct, image: e.target.value })
+              setNewProduct({ ...newProduct, image: e.target.value })
             }
             required
             id="image"
             fullWidth
-            label=" picture url"
+            label="Picture URL"
           />
-          <StyledButton onClick={handleAddProduct}>add</StyledButton>
+          <br /> <br />
+          <StyledButton onClick={handleAddProduct}>Add</StyledButton>
           <StyledButton
             onClick={() => {
-              {
-                setnewProduct("");
-              }
+              setNewProduct({ name: "", price: "", image: "" });
             }}
           >
             Cancel
           </StyledButton>
         </StyledForm>
       </Box>
-      {product && <ProductCard product={product} />}
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
-export default createpage;
+export default CreatePage;

@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar.jsx";
 function App() {
   return (
     <>
-      <Box minHeight="100vh">
+      <Box minHeight="100vh" bgcolor="beige">
         <Navbar />
 
         <Routes>

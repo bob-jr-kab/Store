@@ -1,9 +1,8 @@
 import { Box, Button, Stack, Toolbar, Typography, styled } from "@mui/material";
-import React from "react";
+import { React } from "react";
 import { DarkMode, LocalMall, AddCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 const StyledToolbar = styled(Toolbar)(() => ({
-  backgroundColor: "#3f51b5",
   color: "white",
   padding: "0 20px",
   display: "flex",
@@ -23,12 +22,13 @@ const navbar = () => {
           spacing={2}
         >
           <Typography
-            variant="h6"
+            variant="h5"
             component="div"
+            color="red"
             sx={{
               flexGrow: 1,
+              gap: 1,
               display: "flex",
-
               alignItems: "center",
             }}
           >
